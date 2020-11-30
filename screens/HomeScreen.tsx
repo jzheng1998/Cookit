@@ -2,18 +2,21 @@ import * as React from "react";
 import axios from "axios";
 import { StyleSheet } from "react-native";
 import { Card, Divider, Icon, SearchBar } from "react-native-elements";
-
+import { ScrollView } from "react-native-gesture-handler";
 import { Text, View } from "../components/Themed";
 import edamam_api from "../api-keys/edamam";
+import data from "../api-keys/TestData";
 
 export default function HomeScreen() {
-  const [ingredients, setIngredients] = React.useState([] as string[]);
+  const [ingredients, setIngredients] = React.useState<any[]>([]);
   const [search, setSearch] = React.useState("");
-  const [recipes, setRecipes] = React.useState(null);
+  const [recipes, setRecipes] = React.useState<any[]>(data.hits);
 
   const addIngredient = () => {
     if (search != null || search != "") {
       ingredients.push(search);
+      // Try to limit the quota
+      // getRecipes();
     }
     setSearch("");
   };
@@ -22,25 +25,25 @@ export default function HomeScreen() {
     setSearch(search);
   };
 
-  React.useEffect(() => {
-    const config = {
-      method: "get",
-      baseURL: "https://api.edamam.com/",
-      params: {
-        q: "",
-        app_id: edamam_api.app_id,
-        app_key: edamam_api.app_key,
-      },
-    };
-
-    // axios(config)
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-  }, [ingredients]);
+  const getRecipes = () => {
+    console.log(ingredients);
+    if (ingredients) {
+      axios
+        .get("https://api.edamam.com/search?", {
+          params: {
+            q: ingredients.join(),
+            app_id: edamam_api.app_id,
+            app_key: edamam_api.app_key,
+          },
+        })
+        .then((response) => {
+          setRecipes(response.data.hits);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -59,18 +62,32 @@ export default function HomeScreen() {
           containerStyle={{ justifyContent: "center", marginHorizontal: 10 }}
           name="user-circle"
           type="font-awesome-5"
-          size={40}
+          size={35}
         />
       </View>
       <Divider style={styles.divider} />
       <View style={styles.body}>
-        {/* {{
-          if(recipes: any[]) {
-            recipes.map((key, i) => {
-              return <Card key={key}></Card>;
-            });
-          },
-        }} */}
+        <ScrollView>
+          {recipes.map((collection: any, key: any) => {
+            return (
+              <Card key={key}>
+                <Card.Image source={{ uri: collection.recipe.image }} />
+                <Card.Divider />
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    fontSize: 16,
+                    overflow: "hidden",
+                    textAlign: "center",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {collection.recipe.label}
+                </Text>
+              </Card>
+            );
+          })}
+        </ScrollView>
       </View>
     </View>
   );
