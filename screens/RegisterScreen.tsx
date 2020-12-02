@@ -1,17 +1,18 @@
-import * as React from "react";
-import { TextInput } from "react-native-gesture-handler";
-import firebase from "firebase";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import firebase from 'firebase';
+import * as React from 'react';
+import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [errorMsg, setErrorMsg] = React.useState(null);
+  const [errorMsg, setErrorMsg] = React.useState("");
 
   const handleSignup = () => {
     if (password !== confirmPassword) {
+      setErrorMsg("Password doesn't match.");
     } else {
       firebase
         .auth()
@@ -21,78 +22,75 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
           // ...
         })
         .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          setErrorMsg(errorMessage);
+          setErrorMsg(error.message);
         });
-      //take your to the home screen
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>{"Hello!\n Welcome to Cookit."}</Text>
+    <TouchableWithoutFeedback
+      style={{ height: "100%" }}
+      onPress={() => Keyboard.dismiss()}
+    >
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.errorMessage}>
+            <Text style={styles.error}>{errorMsg}</Text>
+          </View>
 
-      <View style={styles.errorMessage}>
-        {errorMsg && <Text style={styles.error}>{errorMsg}</Text>}
+          <View style={styles.form}>
+            <View>
+              <Text style={styles.inputTitle}>Full Name</Text>
+              <TextInput
+                style={styles.input}
+                autoCapitalize="none"
+                onChangeText={(name) => setName(name)}
+                value={name}
+              />
+            </View>
+
+            <View style={{ marginTop: 32 }}>
+              <Text style={styles.inputTitle}>Email Address</Text>
+              <TextInput
+                style={styles.input}
+                autoCapitalize="none"
+                autoCompleteType="email"
+                onChangeText={(email) => setEmail(email)}
+                value={email}
+              />
+            </View>
+
+            <View style={{ marginTop: 32 }}>
+              <Text style={styles.inputTitle}>Password</Text>
+              <TextInput
+                style={styles.input}
+                autoCapitalize="none"
+                secureTextEntry
+                onChangeText={(password) => setPassword(password)}
+                value={password}
+              />
+            </View>
+
+            <View style={{ marginTop: 32 }}>
+              <Text style={styles.inputTitle}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                autoCapitalize="none"
+                secureTextEntry
+                onChangeText={(confirmPassword) =>
+                  setConfirmPassword(confirmPassword)
+                }
+                value={confirmPassword}
+              ></TextInput>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={{ color: "#FFF", fontWeight: "500" }}>Sign Up</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
-
-      <View style={styles.form}>
-        <View>
-          <Text style={styles.inputTitle}>Full Name</Text>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            onChangeText={(name) => setName(name)}
-            value={name}
-          />
-        </View>
-        <View style={{ marginTop: 32 }}>
-          <Text style={styles.inputTitle}>Email Address</Text>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            onChangeText={(email) => setEmail(email)}
-            value={email}
-          />
-        </View>
-
-        <View style={{ marginTop: 32 }}>
-          <Text style={styles.inputTitle}>Password</Text>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            secureTextEntry
-            onChangeText={(password) => setPassword(password)}
-            value={password}
-          />
-        </View>
-
-        <View style={{ marginTop: 32 }}>
-          <Text style={styles.inputTitle}>Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            secureTextEntry
-            onChangeText={(confirmPassword) =>
-              setConfirmPassword(confirmPassword)
-            }
-            value={confirmPassword}
-          ></TextInput>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={() => handleSignup()}>
-        <Text style={{ color: "#FFF", fontWeight: "500" }}>Sign Up</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ alignSelf: "center", marginTop: 32 }}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={{ color: "#414959", fontSize: 13 }}>Already a user?</Text>
-        <Text style={{ fontWeight: "500", color: "#E9446A" }}>Login</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -109,7 +107,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   errorMessage: {
-    height: 72,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 30,

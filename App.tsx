@@ -1,11 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import firebase from "firebase/app";
+import { StatusBar } from 'expo-status-bar';
+import firebase from 'firebase/app';
+import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
-import Navigation from "./navigation";
+import useCachedResources from './hooks/useCachedResources';
+import useColorScheme from './hooks/useColorScheme';
+import Navigation from './navigation';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -21,6 +21,7 @@ export default function App() {
     appId: "1:195744665965:web:f23eda55ee447a978aca64",
     measurementId: "G-PVVKQWPRCL",
   };
+
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }

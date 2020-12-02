@@ -1,17 +1,14 @@
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import * as React from "react";
-import { ColorSchemeName } from "react-native";
+import * as React from 'react';
+import { ColorSchemeName } from 'react-native';
 
-import LoginScreen from "../screens/LoginScreen";
-import NotFoundScreen from "../screens/NotFoundScreen";
-import RegisterScreen from "../screens/RegisterScreen";
-import { RootStackParamList } from "../types";
-import LinkingConfiguration from "./LinkingConfiguration";
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import LoginScreen from '../screens/LoginScreen';
+import NotFoundScreen from '../screens/NotFoundScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import { RootStackParamList } from '../types';
+import LinkingConfiguration from './LinkingConfiguration';
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -36,13 +33,22 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator
-      initialRouteName="Login"
-      screenOptions={{ headerShown: false }}
-    >
+    <Stack.Navigator initialRouteName="Login">
       {/* <Stack.Screen name="Root" component={BottomTabNavigator} /> */}
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          title: "Login",
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          title: "Register",
+        }}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
