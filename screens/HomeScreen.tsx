@@ -6,23 +6,20 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Text, View } from "../components/Themed";
 import edamam_api from "../api-keys/edamam";
 import data from "../api-keys/TestData";
+import Tag from "../components/Tags";
 
-export default function HomeScreen() {
-  const [ingredients, setIngredients] = React.useState<any[]>([]);
+export default function HomeScreen({ navigation }: { navigation: any }) {
+  const [ingredients, setIngredients] = React.useState<any[]>(["Apple"]);
   const [search, setSearch] = React.useState("");
   const [recipes, setRecipes] = React.useState<any[]>(data.hits);
 
   const addIngredient = () => {
-    if (search != null || search != "") {
-      ingredients.push(search);
+    if (search && search != "") {
+      setIngredients([...ingredients, search]);
+      setSearch("");
       // Try to limit the quota
       // getRecipes();
     }
-    setSearch("");
-  };
-
-  const updateSearch = (search: string) => {
-    setSearch(search);
   };
 
   const getRecipes = () => {
@@ -54,7 +51,7 @@ export default function HomeScreen() {
           round
           containerStyle={styles.searchBarContainer}
           value={search}
-          onChangeText={updateSearch}
+          onChangeText={(search) => setSearch(search)}
           onSubmitEditing={addIngredient}
           placeholder="Input ingredients..."
         />
@@ -66,27 +63,53 @@ export default function HomeScreen() {
         />
       </View>
       <Divider style={styles.divider} />
+      {ingredients && ingredients.length != 0 ? (
+        <View style={styles.tagsContainer}>
+          <ScrollView horizontal={true}>
+            {ingredients &&
+              ingredients.map((ingredient: string, key: number) => {
+                return (
+                  <Tag
+                    key={key}
+                    label={ingredient}
+                    onPress={(e: any) => {
+                      setIngredients(
+                        ingredients.filter((item) => {
+                          return item !== ingredient;
+                        })
+                      );
+                      console.log(ingredients);
+                    }}
+                  />
+                );
+              })}
+          </ScrollView>
+        </View>
+      ) : (
+        <View></View>
+      )}
       <View style={styles.body}>
         <ScrollView>
-          {recipes.map((collection: any, key: any) => {
-            return (
-              <Card key={key}>
-                <Card.Image source={{ uri: collection.recipe.image }} />
-                <Card.Divider />
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    fontSize: 16,
-                    overflow: "hidden",
-                    textAlign: "center",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {collection.recipe.label}
-                </Text>
-              </Card>
-            );
-          })}
+          {recipes &&
+            recipes.map((collection: any, key: number) => {
+              return (
+                <Card key={key}>
+                  <Card.Image source={{ uri: collection.recipe.image }} />
+                  <Card.Divider />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 16,
+                      overflow: "hidden",
+                      textAlign: "center",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {collection.recipe.label}
+                  </Text>
+                </Card>
+              );
+            })}
         </ScrollView>
       </View>
     </View>
@@ -97,6 +120,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    marginTop: 20,
   },
   header: {
     display: "flex",
@@ -105,8 +129,14 @@ const styles = StyleSheet.create({
   },
   searchBarContainer: {
     backgroundColor: "white",
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
     flex: 1,
     justifyContent: "center",
+  },
+  tagsContainer: {
+    borderBottomWidth: 1,
+    flexDirection: "row",
   },
   body: {
     display: "flex",
