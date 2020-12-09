@@ -45,18 +45,19 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <Divider style={styles.divider} />
+      {/* <Divider style={styles.divider} /> */}
       <View style={styles.header}>
         <SearchBar
           lightTheme
           round
           containerStyle={styles.searchBarContainer}
+          inputStyle={{ fontSize: 20 }}
           value={search}
           onChangeText={(search) => setSearch(search)}
           onSubmitEditing={addIngredient}
           placeholder="Input ingredients..."
         />
-        <View style={{ alignSelf: "center", marginHorizontal: 10 }}>
+        <View style={{ alignSelf: "center", marginHorizontal: 7 }}>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Icon name="user-circle" type="font-awesome-5" size={35} />
           </TouchableOpacity>
@@ -64,7 +65,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       </View>
       <Divider style={styles.divider} />
       {ingredients && ingredients.length != 0 ? (
-        <View style={styles.tagsContainer}>
+        <View>
           <ScrollView horizontal={true}>
             {ingredients &&
               ingredients.map((ingredient: string, key: number) => {
@@ -84,6 +85,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 );
               })}
           </ScrollView>
+          <Divider style={styles.divider} />
         </View>
       ) : (
         <View></View>
@@ -118,6 +120,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
 const styles = StyleSheet.create({
   container: {
+    borderTopWidth: 0.5,
     flex: 1,
     flexDirection: "column",
     marginTop: 20,
@@ -132,11 +135,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopWidth: 0,
     flex: 1,
+    height: "100%",
     justifyContent: "center",
-  },
-  tagsContainer: {
-    borderBottomWidth: 1,
-    flexDirection: "row",
+    paddingRight: 0,
   },
   body: {
     display: "flex",
@@ -147,8 +148,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   divider: {
-    backgroundColor: "black",
-    height: 1,
+    backgroundColor: "lightgray",
+    height: 3,
     width: "100%",
   },
 });
