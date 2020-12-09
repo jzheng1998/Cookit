@@ -43,8 +43,9 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     users
       .doc(user?.uid)
       .set({
-        favoriteRecipes: [],
         doneRecipes: [],
+        favoriteRecipes: [],
+        favoriteRecipesIndex: [],
       })
       .then((doc) => {
         setLoading(false);
