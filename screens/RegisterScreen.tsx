@@ -1,7 +1,10 @@
+import 'firebase/firestore';
+
 import firebase from 'firebase';
 import * as React from 'react';
 import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView, TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [name, setName] = React.useState("");
@@ -9,17 +12,18 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const handleSignup = () => {
     if (password !== confirmPassword) {
       setErrorMsg("Password doesn't match.");
     } else {
+      setLoading(true);
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then((user) => {
-          // Signed in
-          // ...
+          setupDocument();
         })
         .catch((error) => {
           setErrorMsg(error.message);
@@ -27,11 +31,36 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     }
   };
 
+  const setupDocument = () => {
+    const user = firebase.auth().currentUser;
+    // Update user display name
+    user?.updateProfile({
+      displayName: name,
+    });
+
+    const database = firebase.firestore();
+    const users = database.collection("users");
+    users
+      .doc(user?.uid)
+      .set({
+        favoriteRecipes: [],
+        doneRecipes: [],
+      })
+      .then((doc) => {
+        setLoading(false);
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        console.warn(error);
+      });
+  };
+
   return (
     <TouchableWithoutFeedback
       style={{ height: "100%" }}
       onPress={() => Keyboard.dismiss()}
     >
+      <Spinner visible={loading} />
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.errorMessage}>
