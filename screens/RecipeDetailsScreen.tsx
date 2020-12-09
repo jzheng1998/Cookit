@@ -1,57 +1,78 @@
+import 'firebase/firestore';
+
 import axios from 'axios';
 import firebase from 'firebase/app';
 import * as React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { WebView } from 'react-native-webview';
 
 import edamam_api from '../api-keys/edamam';
 import data from '../api-keys/TestData';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 
-export default function RecipeDetailsScreen(
-  { navigation }: { navigation: any },
-  recipeId: string
-) {
-  const [recipe, setRecipe] = React.useState<any>({});
+export default function RecipeDetailsScreen({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [done, setDone] = React.useState(false);
-  const [userInformation, setUserInformation] = React.useState({});
+  const [uid, setUID] = React.useState("");
 
   React.useEffect(() => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
+    if (route?.params?.recipeId && route?.params?.url) {
+      getSetting();
     }
   }, []);
 
-  React.useEffect(() => {
-    if (recipeId && recipeId != "") {
-      // axios
-      //   .get("https://api.edamam.com/search?", {
-      //     params: {
-      //       r: recipeId,
-      //       app_id: edamam_api.app_id,
-      //       app_key: edamam_api.app_key,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     setRecipe(response);
-      //     setLoading(false);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-      setRecipe(data.hits[0]);
-      setLoading(false);
-    }
-  }, [recipeId]);
-
-  const markAsComplete = () => {
+  const getSetting = () => {
+    const user = firebase.auth().currentUser;
     const database = firebase.firestore();
+    if (user) {
+      setUID(user.uid);
+      const userRef = database.collection("users").doc(user.uid);
+      userRef.get().then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          setDone(data?.doneRecipes.includes(route.params.recipeId));
+          setLoggedIn(true);
+          setLoading(false);
+        } else {
+          console.log("No such document.");
+        }
+      });
+    }
+  };
+
+  const updateComplete = () => {
+    const database = firebase.firestore();
+    const userRef = database.collection("users").doc(uid);
+    if (done) {
+      userRef
+        .update({
+          doneRecipes: firebase.firestore.FieldValue.arrayRemove(
+            route.params.recipeId
+          ),
+        })
+        .then(() => {
+          setDone(false);
+        });
+    } else {
+      userRef
+        .update({
+          doneRecipes: firebase.firestore.FieldValue.arrayUnion(
+            route.params.recipeId
+          ),
+        })
+        .then(() => {
+          setDone(true);
+        });
+    }
   };
 
   if (loading)
@@ -59,12 +80,35 @@ export default function RecipeDetailsScreen(
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer} />
-      <View style={styles.footerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+      <WebView
+        containerStyle={styles.contentContainer}
+        originWhitelist={["*"]}
+        renderLoading={() => (
+          <ActivityIndicator style={{ flex: 1 }} size="large" />
+        )}
+        source={{
+          uri: route.params.url,
+        }}
+        startInLoadingState={true}
+      />
+      {loggedIn ? (
+        <View
+          style={[
+            styles.footerContainer,
+            { backgroundColor: done ? "lightgreen" : "#4d79ff" },
+          ]}
+        >
+          <TouchableOpacity onPress={() => updateComplete()}>
+            <Text style={styles.footerText}>
+              {done ? "Completed" : "Mark As Complete"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={[styles.footerContainer, { backgroundColor: "#aeaeae" }]}>
           <Text style={styles.footerText}>Mark As Complete</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -83,7 +127,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footerContainer: {
-    backgroundColor: "lightblue",
     height: "10%",
     justifyContent: "center",
   },
