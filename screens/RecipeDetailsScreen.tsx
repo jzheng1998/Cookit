@@ -27,6 +27,7 @@ export default function RecipeDetailsScreen({
   React.useEffect(() => {
     if (route?.params?.recipeId && route?.params?.url) {
       getSetting();
+      setLoading(false);
     }
   }, []);
 
@@ -35,13 +36,12 @@ export default function RecipeDetailsScreen({
     const database = firebase.firestore();
     if (user) {
       setUID(user.uid);
+      setLoggedIn(true);
       const userRef = database.collection("users").doc(user.uid);
       userRef.get().then((doc) => {
         if (doc.exists) {
           const data = doc.data();
           setDone(data?.doneRecipes.includes(route.params.recipeId));
-          setLoggedIn(true);
-          setLoading(false);
         } else {
           console.log("No such document.");
         }
