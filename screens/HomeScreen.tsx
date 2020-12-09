@@ -6,10 +6,9 @@ import { Card, Divider, Icon, SearchBar } from 'react-native-elements';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import edamam_api from '../api-keys/edamam';
-import data from '../api-keys/TestData';
 import Tag from '../components/Tags';
 import { Text, View } from '../components/Themed';
+import data from '../constants/TestData';
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const [ingredients, setIngredients] = React.useState<any[]>(["Apple"]);
@@ -51,8 +50,8 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
         .get("https://api.edamam.com/search?", {
           params: {
             q: ingredients.join(),
-            app_id: edamam_api.app_id,
-            app_key: edamam_api.app_key,
+            app_id: process.env.EDAMAM_API_ID,
+            app_key: process.env.EDAMAM_API_KEY,
           },
         })
         .then((response) => {

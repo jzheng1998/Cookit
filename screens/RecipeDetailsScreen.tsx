@@ -1,6 +1,5 @@
 import 'firebase/firestore';
 
-import axios from 'axios';
 import firebase from 'firebase/app';
 import * as React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
@@ -8,9 +7,6 @@ import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { WebView } from 'react-native-webview';
 
-import edamam_api from '../api-keys/edamam';
-import data from '../api-keys/TestData';
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 
 export default function RecipeDetailsScreen({
@@ -125,7 +121,7 @@ export default function RecipeDetailsScreen({
               flexDirection: "row",
               paddingLeft: 10,
             }}
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.goBack()}
           >
             <Icon
               color="#4d88ff"
@@ -140,7 +136,7 @@ export default function RecipeDetailsScreen({
                 paddingLeft: 5,
               }}
             >
-              Home
+              Back
             </Text>
           </TouchableOpacity>
         </View>
@@ -166,7 +162,7 @@ export default function RecipeDetailsScreen({
             width: 100,
           }}
         >
-          <TouchableOpacity onPress={favRecipe}>
+          <TouchableOpacity onPress={loggedIn ? favRecipe : undefined}>
             <Icon
               name="star"
               type="font-awesome-5"

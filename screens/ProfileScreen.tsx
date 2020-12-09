@@ -84,18 +84,13 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
               <Text style={{ fontSize: 24 }}>No Favorite Recipes.</Text>
             </View>
           ) : (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
               {recipes.map((recipe: any, key: number) => {
                 return (
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("Detail", {
-                        // recipeId:
-                        //   "http://www.edamam.com/ontologies/edamam.owl#recipe_f0b024958ac7323cae871df98a36d313",
-                        // url:
-                        //   "https://smittenkitchen.com/2016/03/spring-chicken-salad-toasts/",
-                        recipeId: recipe.uri,
-                        url: recipe.url,
+                        recipe: recipe,
                       })
                     }
                     key={key}
