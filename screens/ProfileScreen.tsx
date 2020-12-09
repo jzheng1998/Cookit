@@ -61,12 +61,12 @@ export default function ProfileScreen({ navigation }: { navigation: any }) {
     <View style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
         <View style={styles.infoContainer}>
-          <View>
+          <View style={styles.userProfileContainer}>
             <Image style={styles.userProfile} source={profile} />
           </View>
           <View style={styles.userInfoContainer}>
             <Text style={{ fontSize: 24 }}>{user.displayName}</Text>
-            <Text style={{ fontSize: 16, paddingTop: 10 }}>{user.email}</Text>
+            <Text style={{ fontSize: 16, paddingTop: 5 }}>{user.email}</Text>
           </View>
         </View>
 
@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   userProfile: {
+    aspectRatio: 1,
     borderRadius: 150,
     borderWidth: 0.5,
-    height: 100,
-    margin: 20,
-    width: 100,
+    height: "80%",
+    width: undefined,
   },
   userInfoContainer: {
     alignItems: "flex-start",
