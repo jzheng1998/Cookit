@@ -23,10 +23,11 @@ export default function RecipeDetailsScreen({
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [done, setDone] = React.useState(false);
+  const [favorited, setFavorited] = React.useState(false);
   const [uid, setUID] = React.useState("");
 
   React.useEffect(() => {
-    if (route?.params?.recipeId && route?.params?.url) {
+    if (route?.params?.recipe) {
       getSetting();
       setLoading(false);
     }
@@ -42,7 +43,10 @@ export default function RecipeDetailsScreen({
       userRef.get().then((doc) => {
         if (doc.exists) {
           const data = doc.data();
-          setDone(data?.doneRecipes.includes(route.params.recipeId));
+          setDone(data?.doneRecipes.includes(route.params.recipe.uri));
+          setFavorited(
+            data?.favoriteRecipesIndex.includes(route.params.recipe.uri)
+          );
         } else {
           console.log("No such document.");
         }
@@ -57,7 +61,7 @@ export default function RecipeDetailsScreen({
       userRef
         .update({
           doneRecipes: firebase.firestore.FieldValue.arrayRemove(
-            route.params.recipeId
+            route.params.recipe.uri
           ),
         })
         .then(() => {
@@ -67,11 +71,43 @@ export default function RecipeDetailsScreen({
       userRef
         .update({
           doneRecipes: firebase.firestore.FieldValue.arrayUnion(
-            route.params.recipeId
+            route.params.recipe.uri
           ),
         })
         .then(() => {
           setDone(true);
+        });
+    }
+  };
+
+  const favRecipe = () => {
+    const database = firebase.firestore();
+    const userRef = database.collection("users").doc(uid);
+    if (favorited) {
+      userRef
+        .update({
+          favoriteRecipes: firebase.firestore.FieldValue.arrayRemove(
+            route.params.recipe
+          ),
+          favoriteRecipesIndex: firebase.firestore.FieldValue.arrayRemove(
+            route.params.recipe.uri
+          ),
+        })
+        .then(() => {
+          setFavorited(false);
+        });
+    } else {
+      userRef
+        .update({
+          favoriteRecipes: firebase.firestore.FieldValue.arrayUnion(
+            route.params.recipe
+          ),
+          favoriteRecipesIndex: firebase.firestore.FieldValue.arrayUnion(
+            route.params.recipe.uri
+          ),
+        })
+        .then(() => {
+          setFavorited(true);
         });
     }
   };
@@ -111,7 +147,16 @@ export default function RecipeDetailsScreen({
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <Text style={{ fontSize: 16 }}>Recipe Name</Text>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontSize: 16,
+              overflow: "hidden",
+              textTransform: "capitalize",
+            }}
+          >
+            {route.params.recipe.label}
+          </Text>
         </View>
         <View
           style={{
@@ -121,8 +166,13 @@ export default function RecipeDetailsScreen({
             width: 100,
           }}
         >
-          <TouchableOpacity>
-            <Icon name="star" type="font-awesome-5" solid={false} size={25} />
+          <TouchableOpacity onPress={favRecipe}>
+            <Icon
+              name="star"
+              type="font-awesome-5"
+              solid={favorited}
+              size={25}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -133,7 +183,7 @@ export default function RecipeDetailsScreen({
           <ActivityIndicator style={{ flex: 1 }} size="large" />
         )}
         source={{
-          uri: route.params.url,
+          uri: route.params.recipe.url,
         }}
         startInLoadingState={true}
       />

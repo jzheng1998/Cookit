@@ -118,12 +118,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("Detail", {
-                      // recipeId:
-                      //   "http://www.edamam.com/ontologies/edamam.owl#recipe_f0b024958ac7323cae871df98a36d313",
-                      // url:
-                      //   "https://smittenkitchen.com/2016/03/spring-chicken-salad-toasts/",
-                      recipeId: collection.recipe.uri,
-                      url: collection.recipe.url,
+                      recipe: collection.recipe,
                     })
                   }
                   key={key}
