@@ -4,6 +4,7 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { Card, Divider, Icon, SearchBar } from 'react-native-elements';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import edamam_api from '../api-keys/edamam';
 import data from '../api-keys/TestData';
@@ -64,7 +65,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <SearchBar
           lightTheme
@@ -147,16 +148,15 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
             })}
         </ScrollView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderTopWidth: 0.5,
+    backgroundColor: "white",
     flex: 1,
     flexDirection: "column",
-    marginTop: 20,
   },
   header: {
     display: "flex",
