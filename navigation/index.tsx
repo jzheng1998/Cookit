@@ -8,11 +8,13 @@ import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import RecipeDetailsScreen from '../screens/RecipeDetailsScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 
 export type StackParamList = {
   Home: undefined;
+  Detail: undefined;
   Login: undefined;
   Register: undefined;
   Profile: undefined;
@@ -39,6 +41,7 @@ export default function Navigation({
           component={HomeScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Detail" component={RecipeDetailsScreen} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

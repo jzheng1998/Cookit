@@ -114,21 +114,31 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           {recipes &&
             recipes.map((collection: any, key: number) => {
               return (
-                <Card key={key}>
-                  <Card.Image source={{ uri: collection.recipe.image }} />
-                  <Card.Divider />
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      fontSize: 16,
-                      overflow: "hidden",
-                      textAlign: "center",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {collection.recipe.label}
-                  </Text>
-                </Card>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Detail", {
+                      recipeId:
+                        "http://www.edamam.com/ontologies/edamam.owl#recipe_f0b024958ac7323cae871df98a36d313",
+                    })
+                  }
+                  key={key}
+                >
+                  <Card>
+                    <Card.Image source={{ uri: collection.recipe.image }} />
+                    <Card.Divider />
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 16,
+                        overflow: "hidden",
+                        textAlign: "center",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {collection.recipe.label}
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
               );
             })}
         </ScrollView>

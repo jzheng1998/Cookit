@@ -5,6 +5,7 @@ export default {
   config: {
     screens: {
       Home: "Home",
+      Detail: "Detail",
       Login: "Login",
       Register: "Register",
       Profile: "Profile",
