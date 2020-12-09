@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -14,6 +15,7 @@ export type StackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
+  Profile: undefined;
   NotFound: undefined;
 };
 
@@ -49,6 +51,13 @@ export default function Navigation({
           component={RegisterScreen}
           options={{
             title: "Register",
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            title: "Profile",
           }}
         />
         <Stack.Screen name="NotFound" component={NotFoundScreen} />

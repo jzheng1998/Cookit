@@ -7,6 +7,7 @@ export default {
       Home: "Home",
       Login: "Login",
       Register: "Register",
+      Profile: "Profile",
       NotFound: "*",
     },
   },

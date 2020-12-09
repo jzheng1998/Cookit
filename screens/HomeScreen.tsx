@@ -1,4 +1,5 @@
 import axios from 'axios';
+import firebase from 'firebase/app';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { Card, Divider, Icon, SearchBar } from 'react-native-elements';
@@ -13,6 +14,17 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   const [ingredients, setIngredients] = React.useState<any[]>(["Apple"]);
   const [search, setSearch] = React.useState("");
   const [recipes, setRecipes] = React.useState<any[]>(data.hits);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+    });
+  }, []);
 
   const addIngredient = () => {
     if (search && search != "") {
@@ -20,6 +32,14 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       setSearch("");
       // Try to limit the quota
       // getRecipes();
+    }
+  };
+
+  const redirect = () => {
+    if (loggedIn) {
+      navigation.navigate("Profile");
+    } else {
+      navigation.navigate("Login");
     }
   };
 
@@ -45,7 +65,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      {/* <Divider style={styles.divider} /> */}
       <View style={styles.header}>
         <SearchBar
           lightTheme
@@ -58,7 +77,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
           placeholder="Input ingredients..."
         />
         <View style={{ alignSelf: "center", marginHorizontal: 7 }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity onPress={() => redirect()}>
             <Icon name="user-circle" type="font-awesome-5" size={35} />
           </TouchableOpacity>
         </View>
