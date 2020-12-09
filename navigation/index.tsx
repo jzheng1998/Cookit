@@ -41,7 +41,11 @@ export default function Navigation({
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Detail" component={RecipeDetailsScreen} />
+        <Stack.Screen
+          name="Detail"
+          component={RecipeDetailsScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

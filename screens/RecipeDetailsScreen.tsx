@@ -3,7 +3,8 @@ import 'firebase/firestore';
 import axios from 'axios';
 import firebase from 'firebase/app';
 import * as React from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { WebView } from 'react-native-webview';
 
@@ -79,7 +80,52 @@ export default function RecipeDetailsScreen({
     return <ActivityIndicator style={styles.loadingContainer} size="large" />;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={{ width: 100, justifyContent: "center" }}>
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+              flexDirection: "row",
+              paddingLeft: 10,
+            }}
+            onPress={() => navigation.navigate("Home")}
+          >
+            <Icon
+              color="#4d88ff"
+              name="chevron-left"
+              type="font-awesome-5"
+              size={25}
+            />
+            <Text
+              style={{
+                color: "#4d88ff",
+                fontSize: 16,
+                paddingLeft: 5,
+              }}
+            >
+              Home
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text style={{ fontSize: 16 }}>Recipe Name</Text>
+        </View>
+        <View
+          style={{
+            alignItems: "flex-end",
+            justifyContent: "center",
+            paddingRight: 10,
+            width: 100,
+          }}
+        >
+          <TouchableOpacity>
+            <Icon name="star" type="font-awesome-5" solid={false} size={25} />
+          </TouchableOpacity>
+        </View>
+      </View>
       <WebView
         containerStyle={styles.contentContainer}
         originWhitelist={["*"]}
@@ -109,7 +155,7 @@ export default function RecipeDetailsScreen({
           <Text style={styles.footerText}>Mark As Complete</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -120,8 +166,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
+    backgroundColor: "white",
     flex: 1,
     flexDirection: "column",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    height: 50,
+  },
+  back: {
+    flex: 1,
+    flexDirection: "row",
   },
   contentContainer: {
     flex: 1,
