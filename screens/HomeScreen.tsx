@@ -10,10 +10,12 @@ import Tag from '../components/Tags';
 import { Text, View } from '../components/Themed';
 import data from '../constants/TestData';
 
+const initialQuery = ["Apple", "Chicken"];
+
 export default function HomeScreen({ navigation }: { navigation: any }) {
-  const [ingredients, setIngredients] = React.useState<any[]>(["Apple"]);
+  const [ingredients, setIngredients] = React.useState<any[]>(initialQuery);
   const [search, setSearch] = React.useState("");
-  const [recipes, setRecipes] = React.useState<any[]>(data.hits);
+  const [recipes, setRecipes] = React.useState<any>(null);
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
@@ -25,6 +27,25 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
       }
     });
   }, []);
+
+  React.useEffect(() => {
+    if (ingredients.length != 0) {
+      axios
+        .get("https://api.edamam.com/search?", {
+          params: {
+            q: ingredients.join(),
+            app_id: process.env.EDAMAM_API_ID,
+            app_key: process.env.EDAMAM_API_KEY,
+          },
+        })
+        .then((response) => {
+          setRecipes(response.data.hits);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [ingredients]);
 
   const addIngredient = () => {
     if (search && search != "") {
@@ -44,7 +65,6 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   };
 
   const getRecipes = () => {
-    console.log(ingredients);
     if (ingredients) {
       axios
         .get("https://api.edamam.com/search?", {
